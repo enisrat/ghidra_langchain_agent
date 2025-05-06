@@ -89,6 +89,9 @@ def show_call_site(func_name: str, index: int) -> str:
 	f = getFunction(func_name)
 	refs = getReferencesTo(f.getEntryPoint())
 
+	if not refs:
+		return "No call sites found."
+
 	r = refs[index]
 	fp = getFunctionContaining(r.fromAddress)
 	
