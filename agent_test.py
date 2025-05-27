@@ -46,24 +46,24 @@ set_debug(True)
 
 llm = ChatOpenAI(model="llama3.3:24k", max_retries=5)
 
-tools = [tools.rename_function, 
+mytools = [tools.rename_function, 
 		 tools.show_call_site, 
 		 tools.get_num_call_sites, 
 		 tools.comment_function, 
 		 tools.decompile_function]
 
 ARCH="AARCH64"
-PROGRAM_DESC=f"I have to reverse engineer this binary program in {ARCH} architecture. It is part of a firmware and thus we know it has been written by system programmers."
+PROGRAM_DESC=f"I have to reverse engineer this binary program in {ARCH} architecture. It is part of a bootloader chain and thus we know it has been written by system programmers."
 
 # Construct the ReAct agent
 agent = react_agent.create_react_agent( llm, 
-										tools, 
+										mytools, 
 										sysprompt=react_agent.SYSTEM_MESSAGE_FUNC_RENAMING,
 										llama33_quirk=True,
-										debug=False)
+										debug=True)
 
-#funcs_to_rename = [f for (f, _) in allFuncsXrefs()[:20]]
-funcs_to_rename = [getFunctionContaining(currentAddress)]
+funcs_to_rename = [f for (f, _) in tools.allFuncsXrefs()[:25] if f.name.startswith("FUN_")]
+#funcs_to_rename = [getFunctionContaining(currentAddress)]
 
 human_msg = react_agent.HUMAN_MESSAGE_FUNC_RENAMING.partial(PROGRAM_DESC=PROGRAM_DESC)
 react_agent.invoke_on_functions(	agent, 

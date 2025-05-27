@@ -100,5 +100,5 @@ def comment_function(func_name: str, comment: str, c: RunnableConfig):
 	if c["configurable"].get("trace", False):
 		print(f"comment_function: {func_name}")
 	f = getFunction(func_name)
-	setPlateComment(f.getEntryPoint(), comment)
+	setPlateComment(f.getEntryPoint(), f"AI: {comment}")
 
